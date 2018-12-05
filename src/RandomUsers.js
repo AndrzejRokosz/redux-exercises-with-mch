@@ -1,23 +1,38 @@
 import React from 'react'
 
 import { connect } from 'react-redux'
+import { fetchUsersAsyncAction } from './state/randomUsers'
 
+class RandomUsers extends React.Component {
 
-const RandomUsers = (props) => (
-    <div>{
-        props._users.map(
-            user => <div>{user.name.first}</div>
+    componentDidMount() {
+        this.props._fetchUsersAsyncAction('https://randomuser.me/api')
+    }
+    render() {
+        return (
+            <div>
+                {
+                    this.props._isError ?
+                        'Error'
+                        :
+                        this.props._isLoading ? 'Loading'
+                            :
+                            this.props._users.map(user =>
+                                <div>{user.name.first}</div>
+                            )
+                }
+            </div>
         )
     }
-    </div>
-)
-
-
+}
 const mapStateToProps = state => ({
-    _users: state.randomUsers.users
+    _users: state.randomUsers.users,
+    _isLoading: state.isFetching,
+    _isError: state._isError
 })
 
 const mapDispatchToProps = dispatch => ({
+    _fetchUsersAsyncAction: (url) => dispatch(fetchUsersAsyncAction(url))
 
 })
 
